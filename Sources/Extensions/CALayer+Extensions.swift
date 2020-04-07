@@ -36,6 +36,7 @@ struct SkeletonMultilinesLayerConfig {
 	var multilineCornerRadius: Int
 	var multilineSpacing: CGFloat
 	var paddingInsets: UIEdgeInsets
+    var alignment: NSTextAlignment
 }
 
 
@@ -60,6 +61,7 @@ extension CALayer {
 			.setMultilineSpacing(config.multilineSpacing)
             .setPadding(config.paddingInsets)
             .setHeight(height)
+            .setAlignment(config.alignment)
     
         (0..<numberOfSublayers).forEach { index in
 			let width = calculatedWidthForLine(at: index, totalLines: numberOfSublayers, lastLineFillPercent: config.lastLineFillPercent, paddingInsets: config.paddingInsets)
@@ -85,7 +87,7 @@ extension CALayer {
         
         for (index, layer) in currentSkeletonSublayers.enumerated() {
             let width = calculatedWidthForLine(at: index, totalLines: numberOfSublayers, lastLineFillPercent: lastLineFillPercent, paddingInsets: paddingInsets)
-            layer.updateLayerFrame(for: index, size: CGSize(width: width, height: height), multilineSpacing: multilineSpacing, paddingInsets: paddingInsets)
+            layer.updateLayerFrame(for: index, size: CGSize(width: width, height: height), multilineSpacing: multilineSpacing, paddingInsets: paddingInsets, alignment: config.alignment)
         }
     }
 
@@ -97,9 +99,22 @@ extension CALayer {
         return width
     }
 
-    func updateLayerFrame(for index: Int, size: CGSize, multilineSpacing: CGFloat, paddingInsets: UIEdgeInsets) {
-        let spaceRequiredForEachLine = SkeletonAppearance.default.multilineHeight + multilineSpacing
-        frame = CGRect(x: paddingInsets.left, y: CGFloat(index) * spaceRequiredForEachLine + paddingInsets.top, width: size.width, height: size.height)
+    func updateLayerFrame(for index: Int, size: CGSize, multilineSpacing: CGFloat, paddingInsets: UIEdgeInsets, alignment: NSTextAlignment) {
+        switch alignment {
+        case .center:
+            guard let superBounds = superlayer?.bounds else {
+                return
+            }
+            frame = CGRect(x: (superBounds.width - size.width) / 2,
+                           y: CGFloat(index) * size.height,
+                           width: size.width,
+                           height: size.height - multilineSpacing)
+        default:
+            frame = CGRect(x: 0.0,
+                           y: CGFloat(index) * size.height,
+                           width: size.width,
+                           height: size.height - multilineSpacing)
+        }
     }
 
 	private func calculateNumLines(for config: SkeletonMultilinesLayerConfig) -> Int {

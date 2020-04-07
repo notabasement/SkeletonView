@@ -33,6 +33,10 @@ extension UILabel: ContainsMultilineText {
     var numLines: Int {
         return numberOfLines
     }
+    
+    var alignment: NSTextAlignment {
+        return textAlignment
+    }
 
     var lastLineFillingPercent: Int {
         get { return ao_get(pkey: &MultilineAssociatedKeys.lastLineFillingPercent) as? Int ?? SkeletonAppearance.default.multilineLastLineFillPercent }

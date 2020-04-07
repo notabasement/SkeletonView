@@ -32,6 +32,10 @@ extension UITextView: ContainsMultilineText {
 	var multilineTextFont: UIFont? {
 		return font
 	}
+    
+    var alignment: NSTextAlignment {
+        return textAlignment
+    }
 	
     var lastLineFillingPercent: Int {
         get {

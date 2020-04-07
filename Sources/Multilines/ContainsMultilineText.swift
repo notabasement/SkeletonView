@@ -12,6 +12,7 @@ enum MultilineAssociatedKeys {
 protocol ContainsMultilineText {
 	var multilineTextFont: UIFont? { get }
     var numLines: Int { get }
+    var alignment: NSTextAlignment { get }
     var lastLineFillingPercent: Int { get }
     var multilineCornerRadius: Int { get }
     var multilineSpacing: CGFloat { get }
