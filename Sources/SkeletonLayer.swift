@@ -47,9 +47,9 @@ struct SkeletonLayer {
     
     init(type: SkeletonType, colors: [UIColor], skeletonHolder holder: UIView) {
         var bounds = holder.maxBoundsEstimated
-        if holder.skeletonWidthPercent != 0.0 {
+        if holder.skeletonWidthPercent != 0 {
             if let superview = holder.superview {
-                let width: CGFloat = superview.frame.width * CGFloat(holder.skeletonWidthPercent)
+                let width: CGFloat = superview.frame.width * CGFloat(holder.skeletonWidthPercent) / 100
                 bounds = CGRect(x: bounds.minX, y: bounds.minY, width: width, height: bounds.height)
             }
         }
@@ -70,9 +70,9 @@ struct SkeletonLayer {
 
     func layoutIfNeeded() {
         if var bounds = holder?.maxBoundsEstimated {
-            if holder?.skeletonWidthPercent != 0.0 {
+            if holder?.skeletonWidthPercent != 0 {
                 if let superview = holder?.superview {
-                    let width: CGFloat = superview.frame.width * CGFloat(holder?.skeletonWidthPercent ?? 0.0)
+                    let width: CGFloat = superview.frame.width * CGFloat(holder?.skeletonWidthPercent ?? 0) / 100
                     bounds = CGRect(x: bounds.minX, y: bounds.minY, width: width, height: bounds.height)
                 }
             }
