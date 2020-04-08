@@ -28,7 +28,7 @@ class SkeletonViewAppearance: Appearance {
 
     var multilineSpacing: CGFloat = 0
 
-    var multilineLastLineFillPercent: Int = 70
+    var multilineLastLineFillPercent: Int = 100
 
     var multilineCornerRadius: Int = 0
     
