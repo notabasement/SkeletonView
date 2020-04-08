@@ -46,10 +46,18 @@ struct SkeletonLayer {
     }
     
     init(type: SkeletonType, colors: [UIColor], skeletonHolder holder: UIView) {
+        var bounds = holder.maxBoundsEstimated
+        if holder.skeletonWidthPercent != 0.0 {
+            if let superview = holder.superview {
+                let width: CGFloat = superview.frame.width * CGFloat(holder.skeletonWidthPercent)
+                bounds = CGRect(x: bounds.minX, y: bounds.minY, width: width, height: bounds.height)
+            }
+        }
+        
         self.holder = holder
         self.maskLayer = type.layer
         self.maskLayer.anchorPoint = .zero
-        self.maskLayer.bounds = holder.maxBoundsEstimated
+        self.maskLayer.bounds = bounds
         self.maskLayer.cornerRadius = CGFloat(holder.skeletonCornerRadius)
         addTextLinesIfNeeded()
         self.maskLayer.tint(withColors: colors)
@@ -61,7 +69,13 @@ struct SkeletonLayer {
     }
 
     func layoutIfNeeded() {
-        if let bounds = holder?.maxBoundsEstimated {
+        if var bounds = holder?.maxBoundsEstimated {
+            if holder?.skeletonWidthPercent != 0.0 {
+                if let superview = holder?.superview {
+                    let width: CGFloat = superview.frame.width * CGFloat(holder?.skeletonWidthPercent ?? 0.0)
+                    bounds = CGRect(x: bounds.minX, y: bounds.minY, width: width, height: bounds.height)
+                }
+            }
             maskLayer.bounds = bounds
         }
         updateLinesIfNeeded()

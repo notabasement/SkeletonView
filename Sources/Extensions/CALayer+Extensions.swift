@@ -80,10 +80,7 @@ extension CALayer {
         let lastLineFillPercent = config.lastLineFillPercent
         let paddingInsets = config.paddingInsets
         let multilineSpacing = config.multilineSpacing
-        var height = config.lineHeight ?? SkeletonAppearance.default.multilineHeight
-        if numberOfSublayers == 1 {
-            height = bounds.height
-        }
+        let height = config.lineHeight ?? SkeletonAppearance.default.multilineHeight
         
         for (index, layer) in currentSkeletonSublayers.enumerated() {
             let width = calculatedWidthForLine(at: index, totalLines: numberOfSublayers, lastLineFillPercent: lastLineFillPercent, paddingInsets: paddingInsets)
@@ -93,7 +90,7 @@ extension CALayer {
 
     private func calculatedWidthForLine(at index: Int, totalLines: Int, lastLineFillPercent: Int, paddingInsets: UIEdgeInsets) -> CGFloat {
         var width = bounds.width - paddingInsets.left - paddingInsets.right
-        if index == totalLines - 1 && totalLines != 1 {
+        if index == totalLines - 1 && totalLines != 0 {
             width = width * CGFloat(lastLineFillPercent) / 100
         }
         return width
