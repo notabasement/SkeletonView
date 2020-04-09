@@ -16,9 +16,9 @@ public extension UIView {
     }
     
     @IBInspectable
-    var skeletonWidthPercent: Int {
-        get { return skeletonableWidthPercent }
-        set { skeletonableWidthPercent = min(newValue, 100) }
+    var parentWidthFillPercent: Int {
+        get { return skeletonableParentWidthFillPercent }
+        set { skeletonableParentWidthFillPercent = min(newValue, 100) }
     }
     
     var isSkeletonActive: Bool {
@@ -35,9 +35,9 @@ public extension UIView {
         set { ao_set(newValue ?? 0.0, pkey: &ViewAssociatedKeys.skeletonCornerRadius) }
     }
     
-    private var skeletonableWidthPercent: Int! {
-        get { return ao_get(pkey: &ViewAssociatedKeys.skeletonWidthPercent) as? Int ?? 0 }
-        set { ao_set(newValue ?? 0, pkey: &ViewAssociatedKeys.skeletonWidthPercent) }
+    private var skeletonableParentWidthFillPercent: Int! {
+        get { return ao_get(pkey: &ViewAssociatedKeys.parentWidthFillPercent) as? Int ?? 0 }
+        set { ao_set(newValue ?? 0, pkey: &ViewAssociatedKeys.parentWidthFillPercent) }
     }
 }
 
