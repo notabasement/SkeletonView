@@ -61,21 +61,23 @@ struct SkeletonLayer {
     }
 
     func layoutIfNeeded() {
-        var frameOrigin = CGPoint.zero
         if let holder = holder {
             var bounds = holder.maxBoundsEstimated
             if holder.parentWidthFillPercent != 0 {
                 if let superview = holder.superview {
-                    let width: CGFloat = (superview.frame.width - holder.frame.origin.x * 2) * CGFloat(holder.parentWidthFillPercent) / 100
-                    bounds = CGRect(x: bounds.minX, y: bounds.minY, width: width, height: bounds.height)
+                    var width: CGFloat
                     let centerConstraints = superview.constraints.filter({ $0.firstAttribute == .centerX && $0.secondAttribute == .centerX })
-                    if centerConstraints.contains(where: { $0.firstItem?.isEqual(holder) ?? $0.secondItem?.isEqual(holder) ?? false }) {
-                        frameOrigin = CGPoint(x: (holder.frame.width - width) / 2, y: 0)
+                    if centerConstraints.contains(where: { ($0.firstItem?.isEqual(holder) ?? false) || ($0.secondItem?.isEqual(holder) ?? false) }) {
+                        width = superview.frame.width * CGFloat(holder.parentWidthFillPercent) / 100
+                        let frameOrigin = CGPoint(x: (holder.frame.width - width) / 2, y: 0)
+                        maskLayer.frame.origin = frameOrigin
+                    } else {
+                        width = (superview.frame.width - holder.frame.origin.x * 2) * CGFloat(holder.parentWidthFillPercent) / 100
                     }
+                    bounds = CGRect(x: bounds.minX, y: bounds.minY, width: width, height: bounds.height)
                 }
             }
             maskLayer.bounds = bounds
-            maskLayer.frame.origin = frameOrigin
         }
         updateLinesIfNeeded()
     }
