@@ -46,18 +46,10 @@ struct SkeletonLayer {
     }
     
     init(type: SkeletonType, colors: [UIColor], skeletonHolder holder: UIView) {
-        var bounds = holder.maxBoundsEstimated
-        if holder.parentWidthFillPercent != 0 {
-            if let superview = holder.superview {
-                let width: CGFloat = (superview.frame.width - holder.frame.origin.x * 2) * CGFloat(holder.parentWidthFillPercent) / 100
-                bounds = CGRect(x: bounds.minX, y: bounds.minY, width: width, height: bounds.height)
-            }
-        }
-        
         self.holder = holder
         self.maskLayer = type.layer
         self.maskLayer.anchorPoint = .zero
-        self.maskLayer.bounds = bounds
+        self.maskLayer.bounds = holder.maxBoundsEstimated
         self.maskLayer.cornerRadius = CGFloat(holder.skeletonCornerRadius)
         addTextLinesIfNeeded()
         self.maskLayer.tint(withColors: colors)
@@ -69,14 +61,21 @@ struct SkeletonLayer {
     }
 
     func layoutIfNeeded() {
-        if var bounds = holder?.maxBoundsEstimated {
-            if holder?.parentWidthFillPercent != 0 {
-                if let superview = holder?.superview {
-                    let width: CGFloat = (superview.frame.width - (holder?.frame.origin.x ?? 0) * 2) * CGFloat(holder?.parentWidthFillPercent ?? 0) / 100
+        var frameOrigin = CGPoint.zero
+        if let holder = holder {
+            var bounds = holder.maxBoundsEstimated
+            if holder.parentWidthFillPercent != 0 {
+                if let superview = holder.superview {
+                    let width: CGFloat = (superview.frame.width - holder.frame.origin.x * 2) * CGFloat(holder.parentWidthFillPercent) / 100
                     bounds = CGRect(x: bounds.minX, y: bounds.minY, width: width, height: bounds.height)
+                    let centerConstraints = superview.constraints.filter({ $0.firstAttribute == .centerX && $0.secondAttribute == .centerX })
+                    if centerConstraints.contains(where: { $0.firstItem?.isEqual(holder) ?? $0.secondItem?.isEqual(holder) ?? false }) {
+                        frameOrigin = CGPoint(x: (holder.frame.width - width) / 2, y: 0)
+                    }
                 }
             }
             maskLayer.bounds = bounds
+            maskLayer.frame.origin = frameOrigin
         }
         updateLinesIfNeeded()
     }
