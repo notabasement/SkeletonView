@@ -62,4 +62,11 @@ extension UITextView: ContainsMultilineText {
         get { return ao_get(pkey: &MultilineAssociatedKeys.paddingInsets) as? UIEdgeInsets ?? .zero }
         set { ao_set(newValue, pkey: &MultilineAssociatedKeys.paddingInsets) }
     }
+    
+    var additionalMultilineSpacing: CGFloat {
+        if let paragraphStyle = attributedText?.attribute(.paragraphStyle, at: 0, effectiveRange: nil) as? NSMutableParagraphStyle {
+            return paragraphStyle.lineSpacing
+        }
+        return 0.0
+    }
 }

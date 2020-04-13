@@ -11,6 +11,7 @@ class SkeletonMultilineLayerBuilder {
     var width: CGFloat?
     var cornerRadius: Int?
     var multilineSpacing: CGFloat = SkeletonAppearance.default.multilineSpacing
+    var additionalLineSpacing: CGFloat?
     var paddingInsets: UIEdgeInsets = .zero
     var alignment: NSTextAlignment?
 
@@ -44,6 +45,11 @@ class SkeletonMultilineLayerBuilder {
         return self
     }
 
+    func setAdditionalLineSpacing(_ spacing: CGFloat) -> SkeletonMultilineLayerBuilder {
+        self.additionalLineSpacing = spacing
+        return self
+    }
+
     func setPadding(_ insets: UIEdgeInsets) -> SkeletonMultilineLayerBuilder {
         self.paddingInsets = insets
         return self
@@ -60,14 +66,14 @@ class SkeletonMultilineLayerBuilder {
               let width = width,
               let height = height,
               let radius = cornerRadius,
-              let alignment = alignment
+              let alignment = alignment,
+            let additionalLineSpacing = additionalLineSpacing
             else { return nil }
-
+        
         let layer = type.layer
         layer.anchorPoint = .zero
         layer.name = CALayer.skeletonSubLayersName
-        layer.updateLayerFrame(for: index, size: CGSize(width: width, height: height), multilineSpacing: self.multilineSpacing, paddingInsets: paddingInsets, alignment: alignment)
-
+        layer.updateLayerFrame(for: index, size: CGSize(width: width, height: height), multilineSpacing: self.multilineSpacing, additionalLineSpacing: additionalLineSpacing, paddingInsets: paddingInsets, alignment: alignment)
         layer.cornerRadius = CGFloat(radius)
         layer.masksToBounds = true
 

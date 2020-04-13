@@ -17,6 +17,7 @@ protocol ContainsMultilineText {
     var multilineCornerRadius: Int { get }
     var multilineSpacing: CGFloat { get }
     var paddingInsets: UIEdgeInsets { get }
+    var additionalMultilineSpacing: CGFloat { get }
 }
 
 extension ContainsMultilineText {
