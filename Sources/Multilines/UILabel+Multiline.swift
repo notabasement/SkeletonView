@@ -16,7 +16,7 @@ public extension UILabel {
     @IBInspectable
     var skeletonLineSpacing: CGFloat {
         get { return multilineSpacing }
-        set { multilineSpacing = min(newValue, 10) }
+        set { multilineSpacing = newValue }
     }
     @IBInspectable
     var skeletonPaddingInsets: UIEdgeInsets {
