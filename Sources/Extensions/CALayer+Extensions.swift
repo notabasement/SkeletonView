@@ -114,7 +114,6 @@ extension CALayer {
                            width: size.width,
                            height: size.height - multilineSpacing)
         }
-        print("[SkeletonView] frame = \(frame)")
     }
 
 	private func calculateNumLines(for config: SkeletonMultilinesLayerConfig) -> Int {
