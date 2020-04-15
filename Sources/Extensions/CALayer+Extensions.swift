@@ -87,19 +87,6 @@ extension CALayer {
                 layer.removeFromSuperlayer()
             })
         } else if numberOfSublayers > numberOfSkeletonSublayers {
-            guard let firstSublayer = sublayers?.first else { return }
-            
-            let numInsertedLayers = numberOfSublayers - numberOfSkeletonSublayers
-            var colors: [UIColor] = []
-            let hasAnimation = firstSublayer.animationKeys() != nil
-            
-            if let sublayer = firstSublayer as? CAGradientLayer {
-                if let sublayerColors = sublayer.colors as? [CGColor] {
-                    colors = sublayerColors.map({ UIColor(cgColor: $0) })
-                }
-            } else {
-                colors = [UIColor(cgColor: firstSublayer.backgroundColor!)]
-            }
             let layerBuilder = SkeletonMultilineLayerBuilder()
                 .setSkeletonType(config.type)
                 .setCornerRadius(config.multilineCornerRadius)
@@ -109,6 +96,14 @@ extension CALayer {
                 .setHeight(height)
                 .setAlignment(config.alignment)
             
+            var colors: [UIColor]
+            if let firstSublayer = sublayers?.first as? CAGradientLayer {
+                colors = (firstSublayer.colors as? [CGColor]).map { $0.map { UIColor(cgColor: $0) } } ?? []
+            } else {
+                colors = sublayers?.first?.backgroundColor.map { UIColor(cgColor: $0) }.map { [$0] } ?? []
+            }
+            let hasAnimation = sublayers?.first?.animationKeys() != nil
+            let numInsertedLayers = numberOfSublayers - numberOfSkeletonSublayers
             (0..<numInsertedLayers).forEach { index in
                 let width = calculatedWidthForLine(at: index, totalLines: numberOfSublayers, lastLineFillPercent: config.lastLineFillPercent, paddingInsets: config.paddingInsets)
                 if let layer = layerBuilder
