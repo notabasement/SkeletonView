@@ -126,7 +126,7 @@ struct SkeletonLayer {
                                                    alignment: textView.alignment,
                                                    additionalLineSpacing: textView.additionalMultilineSpacing)
         
-        maskLayer.insertMultilinesLayers(for: config, with: colors)
+        maskLayer.reloadMultilinesLayers(for: config)
         maskLayer.updateMultilinesLayers(for: config)
     }
     

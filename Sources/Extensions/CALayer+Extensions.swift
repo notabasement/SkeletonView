@@ -76,7 +76,7 @@ extension CALayer {
         }
     }
     
-    func insertMultilinesLayers(for config: SkeletonMultilinesLayerConfig, with colors: [UIColor]) {
+    func reloadMultilinesLayers(for config: SkeletonMultilinesLayerConfig) {
         let numberOfSkeletonSublayers = skeletonSublayers.count
         let numberOfSublayers = calculateNumLines(for: config)
         let height = config.lineHeight ?? SkeletonAppearance.default.multilineHeight
@@ -86,8 +86,20 @@ extension CALayer {
             sublayers?.prefix(numRemovedLayers).forEach( { layer in
                 layer.removeFromSuperlayer()
             })
-        } else {
+        } else if numberOfSublayers > numberOfSkeletonSublayers {
+            guard let firstSublayer = sublayers?.first else { return }
+            
             let numInsertedLayers = numberOfSublayers - numberOfSkeletonSublayers
+            var colors: [UIColor] = []
+            let hasAnimation = firstSublayer.animationKeys() != nil
+            
+            if let sublayer = firstSublayer as? CAGradientLayer {
+                if let sublayerColors = sublayer.colors as? [CGColor] {
+                    colors = sublayerColors.map({ UIColor(cgColor: $0) })
+                }
+            } else {
+                colors = [UIColor(cgColor: firstSublayer.backgroundColor!)]
+            }
             let layerBuilder = SkeletonMultilineLayerBuilder()
                 .setSkeletonType(config.type)
                 .setCornerRadius(config.multilineCornerRadius)
@@ -104,7 +116,9 @@ extension CALayer {
                     .setWidth(width)
                     .build() {
                     layer.tint(withColors: colors)
-                    layer.playAnimation(config.type.layerAnimation, key: "skeletonAnimation")
+                    if hasAnimation {
+                        layer.playAnimation(config.type.layerAnimation, key: "skeletonAnimation")
+                    }
                     insertSublayer(layer, at: UInt32(index))
                 }
             }
