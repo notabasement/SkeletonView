@@ -36,6 +36,7 @@ public enum SkeletonType {
 struct SkeletonLayer {
     private var maskLayer: CALayer
     private weak var holder: UIView?
+    private var colors: [UIColor]
     
     var type: SkeletonType {
         return maskLayer is CAGradientLayer ? .gradient : .solid
@@ -47,6 +48,7 @@ struct SkeletonLayer {
     
     init(type: SkeletonType, colors: [UIColor], skeletonHolder holder: UIView) {
         self.holder = holder
+        self.colors = colors
         self.maskLayer = type.layer
         self.maskLayer.anchorPoint = .zero
         self.maskLayer.bounds = holder.maxBoundsEstimated
@@ -124,6 +126,7 @@ struct SkeletonLayer {
                                                    alignment: textView.alignment,
                                                    additionalLineSpacing: textView.additionalMultilineSpacing)
         
+        maskLayer.insertMultilinesLayers(for: config, with: colors)
         maskLayer.updateMultilinesLayers(for: config)
     }
     

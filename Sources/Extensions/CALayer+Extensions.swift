@@ -75,6 +75,41 @@ extension CALayer {
             }
         }
     }
+    
+    func insertMultilinesLayers(for config: SkeletonMultilinesLayerConfig, with colors: [UIColor]) {
+        let currentSkeletonSublayers = skeletonSublayers
+        let numberOfSublayers = calculateNumLines(for: config)
+        let height = config.lineHeight ?? SkeletonAppearance.default.multilineHeight
+        
+        if numberOfSublayers < currentSkeletonSublayers.count {
+            let removeLayers = max(currentSkeletonSublayers.count - numberOfSublayers, 0)
+            sublayers?.prefix(removeLayers).forEach( { layer in
+                layer.removeFromSuperlayer()
+            })
+        } else {
+            let insertLayers = max(numberOfSublayers - currentSkeletonSublayers.count, 0)
+            let layerBuilder = SkeletonMultilineLayerBuilder()
+                .setSkeletonType(config.type)
+                .setCornerRadius(config.multilineCornerRadius)
+                .setMultilineSpacing(config.multilineSpacing)
+                .setAdditionalLineSpacing(config.additionalLineSpacing)
+                .setPadding(config.paddingInsets)
+                .setHeight(height)
+                .setAlignment(config.alignment)
+            
+            (0..<insertLayers).forEach { index in
+                let width = calculatedWidthForLine(at: index, totalLines: numberOfSublayers, lastLineFillPercent: config.lastLineFillPercent, paddingInsets: config.paddingInsets)
+                if let layer = layerBuilder
+                    .setIndex(index)
+                    .setWidth(width)
+                    .build() {
+                    layer.tint(withColors: colors)
+                    layer.playAnimation(config.type.layerAnimation, key: "skeletonAnimation")
+                    insertSublayer(layer, at: UInt32(index))
+                }
+            }
+        }
+    }
 
     func updateMultilinesLayers(for config: SkeletonMultilinesLayerConfig) {
         let currentSkeletonSublayers = skeletonSublayers
