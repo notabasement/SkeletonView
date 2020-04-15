@@ -77,17 +77,17 @@ extension CALayer {
     }
     
     func insertMultilinesLayers(for config: SkeletonMultilinesLayerConfig, with colors: [UIColor]) {
-        let currentSkeletonSublayers = skeletonSublayers
+        let numberOfSkeletonSublayers = skeletonSublayers.count
         let numberOfSublayers = calculateNumLines(for: config)
         let height = config.lineHeight ?? SkeletonAppearance.default.multilineHeight
         
-        if numberOfSublayers < currentSkeletonSublayers.count {
-            let removeLayers = max(currentSkeletonSublayers.count - numberOfSublayers, 0)
-            sublayers?.prefix(removeLayers).forEach( { layer in
+        if numberOfSublayers < numberOfSkeletonSublayers {
+            let numRemovedLayers = numberOfSkeletonSublayers - numberOfSublayers
+            sublayers?.prefix(numRemovedLayers).forEach( { layer in
                 layer.removeFromSuperlayer()
             })
         } else {
-            let insertLayers = max(numberOfSublayers - currentSkeletonSublayers.count, 0)
+            let numInsertedLayers = numberOfSublayers - numberOfSkeletonSublayers
             let layerBuilder = SkeletonMultilineLayerBuilder()
                 .setSkeletonType(config.type)
                 .setCornerRadius(config.multilineCornerRadius)
@@ -97,7 +97,7 @@ extension CALayer {
                 .setHeight(height)
                 .setAlignment(config.alignment)
             
-            (0..<insertLayers).forEach { index in
+            (0..<numInsertedLayers).forEach { index in
                 let width = calculatedWidthForLine(at: index, totalLines: numberOfSublayers, lastLineFillPercent: config.lastLineFillPercent, paddingInsets: config.paddingInsets)
                 if let layer = layerBuilder
                     .setIndex(index)
