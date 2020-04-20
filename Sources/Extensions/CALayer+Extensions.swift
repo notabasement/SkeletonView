@@ -81,7 +81,7 @@ extension CALayer {
         let numberOfSublayers = calculateNumLines(for: config)
         let height = config.lineHeight ?? SkeletonAppearance.default.multilineHeight
         
-        if numberOfSublayers < numberOfSkeletonSublayers {
+        if numberOfSublayers > 0 && numberOfSublayers < numberOfSkeletonSublayers {
             let numRemovedLayers = numberOfSkeletonSublayers - numberOfSublayers
             sublayers?.prefix(numRemovedLayers).forEach( { layer in
                 layer.removeFromSuperlayer()
