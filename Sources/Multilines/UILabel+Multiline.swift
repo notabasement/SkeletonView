@@ -59,9 +59,12 @@ extension UILabel: ContainsMultilineText {
     }
     
     var additionalMultilineSpacing: CGFloat {
-        if let paragraphStyle = attributedText?.attribute(.paragraphStyle, at: 0, effectiveRange: nil) as? NSMutableParagraphStyle {
-            return paragraphStyle.lineSpacing
+        guard let attributedText = attributedText,
+            attributedText.length > 0,
+            let paragraphStyle = attributedText.attribute(.paragraphStyle, at: 0, effectiveRange: nil) as? NSMutableParagraphStyle
+            else {
+                return 0.0
         }
-        return 0.0
+        return paragraphStyle.lineSpacing
     }
 }
