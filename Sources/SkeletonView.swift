@@ -96,7 +96,10 @@ extension UIView {
     @objc func skeletonLayoutSubviews() {
         skeletonLayoutSubviews()
         guard isSkeletonActive else { return }
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
         layoutSkeletonIfNeeded()
+        CATransaction.commit()
     }
 
     @objc func skeletonTraitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
